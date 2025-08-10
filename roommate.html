@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Roommate - Homes by Homies</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">Homes by Homies</div>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="findroommate.html">Find Roommate</a>
+      </nav>
+    </header>
+
+    <div id="content"></div>
+
+    <footer><small>Homes by Homies</small></footer>
+  </div>
+
+  <script type="module">
+    import { fetchRoommate } from './js/app.js';
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+
+    async function load() {
+      if(!id) { document.getElementById('content').innerHTML = '<div class="card">No selection</div>'; return; }
+      const r = await fetchRoommate(id);
+      document.getElementById('content').innerHTML = r ? `
+        <div class="card">
+          <h2>${r.title}</h2>
+          <div class="meta">${r.location || '—'} • ₹${r.budget_min||'?' } - ${r.budget_max||'?' }</div>
+          <p>${r.description || ''}</p>
+          <p class="small">Posted by ${r.poster_name || '—'}</p>
+        </div>
+      ` : '<div class="card">Not found</div>';
+    }
+
+    load();
+  </script>
+</body>
+</html>

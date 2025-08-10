@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Register - Homes by Homies</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">Homes by Homies</div>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </header>
+
+    <h2>Register</h2>
+    <div class="card">
+      <input id="name" class="input" placeholder="Full name">
+      <input id="email" class="input" placeholder="Email" type="email">
+      <input id="password" class="input" placeholder="Password" type="password">
+      <button id="registerBtn" class="btn">Register</button>
+    </div>
+
+    <footer><small>Homes by Homies</small></footer>
+  </div>
+
+  <script type="module">
+    import { register } from './js/app.js';
+    document.getElementById('registerBtn').addEventListener('click', async () => {
+      try {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        await register(name, email, password);
+        alert('Registered and logged in');
+        window.location = 'dashboard.html';
+      } catch (err) {
+        alert('Register failed: ' + (err.message || ''));
+      }
+    });
+  </script>
+</body>
+</html>

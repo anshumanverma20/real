@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Post Roommate - Homes by Homies</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">Homes by Homies</div>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+      </nav>
+    </header>
+
+    <h2>Post Roommate Request</h2>
+    <div class="card">
+      <input id="title" class="input" placeholder="Title (eg. Looking for a roommate in Koramangala)">
+      <textarea id="description" class="input" placeholder="Details about you and what you're looking for"></textarea>
+      <input id="location" class="input" placeholder="Location">
+      <div class="form-row">
+        <input id="budget_min" class="input" placeholder="Min budget" type="number">
+        <input id="budget_max" class="input" placeholder="Max budget" type="number">
+      </div>
+      <input id="preferences" class="input" placeholder="Preferences (non-smoker, gender, etc)">
+      <input id="image_url" class="input" placeholder="Image URL (optional)">
+      <button id="submit" class="btn">Post Roommate</button>
+      <p class="small">You must be logged in to post. <a href="login.html">Login</a></p>
+    </div>
+
+    <footer><small>Homes by Homies</small></footer>
+  </div>
+
+  <script type="module">
+    import { addRoommate } from './js/app.js';
+    document.getElementById('submit').addEventListener('click', async () => {
+      try {
+        const payload = {
+          title: document.getElementById('title').value,
+          description: document.getElementById('description').value,
+          location: document.getElementById('location').value,
+          budget_min: document.getElementById('budget_min').value,
+          budget_max: document.getElementById('budget_max').value,
+          preferences: document.getElementById('preferences').value,
+          image_url: document.getElementById('image_url').value
+        };
+        const res = await addRoommate(payload);
+        if (res && res.id) {
+          alert('Created roommate post #' + res.id);
+          window.location.href = 'roommate.html?id=' + res.id;
+        } else {
+          alert(res.message || 'Failed');
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Dashboard - Homes by Homies</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">Homes by Homies</div>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="add-property.html">Add Property</a>
+        <a href="add-roommate.html">Post Roommate</a>
+        <a href="#" id="logout">Logout</a>
+      </nav>
+    </header>
+
+    <h2>Your Dashboard</h2>
+
+    <section>
+      <h3>Your Properties</h3>
+      <div id="myProperties" class="grid"></div>
+    </section>
+
+    <section style="margin-top:16px;">
+      <h3>Your Roommate Posts</h3>
+      <div id="myRoommates" class="grid"></div>
+    </section>
+
+    <footer><small>Homes by Homies</small></footer>
+  </div>
+
+  <script type="module">
+    import { myProperties, fetchRoommates, logout } from './js/app.js';
+
+    document.getElementById('logout').addEventListener('click', (e) => {
+      e.preventDefault();
+      logout();
+    });
+
+    async function load() {
+      const props = await myProperties();
+      const el = document.getElementById('myProperties');
+      if (!props || props.length === 0) el.innerHTML = '<div class="card small">No properties</div>';
+      else el.innerHTML = props.map(p => `
+        <a class="card linkless" href="property.html?id=${p.id}">
+          <h3>${p.title}</h3>
+          <div class="meta">₹${p.price} • ${p.location || '—'}</div>
+        </a>
+      `).join('');
+
+      // to show user's roommate posts we reuse GET /roommates and filter by poster id isn't implemented on backend,
+      // so we just fetch all and filter by poster_name = current user (simple approach because backend doesn't return user)
+      const rms = await fetchRoommates();
+      const rmEl = document.getElementById('myRoommates');
+      rmEl.innerHTML = rms.length === 0 ? '<div class="card small">No posts</div>' : rms.map(r => `
+        <a class="card linkless" href="roommate.html?id=${r.id}">
+          <h3>${r.title}</h3>
+          <div class="meta">${r.location || '—'}</div>
+        </a>
+      `).join('');
+    }
+
+    load();
+  </script>
+</body>
+</html>

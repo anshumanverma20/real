@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Homes by Homies</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">Homes by Homies</div>
+      <nav class="nav">
+        <a href="listings.html">Listings</a>
+        <a href="findroommate.html">Find Roommate</a>
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+      </nav>
+    </header>
+
+    <section>
+      <h2>Featured properties</h2>
+      <div id="featured" class="grid"></div>
+    </section>
+
+    <section style="margin-top:20px;">
+      <h2>Roommates looking for homes</h2>
+      <div id="featured-roommates" class="grid"></div>
+    </section>
+
+    <footer><small>Built with ❤️ — Homes by Homies</small></footer>
+  </div>
+
+  <script type="module">
+    import { fetchProperties, fetchRoommates } from './js/app.js';
+
+    async function load() {
+      const props = await fetchProperties({}); 
+      const container = document.getElementById('featured');
+      container.innerHTML = props.slice(0,6).map(p => `
+        <a class="card linkless" href="property.html?id=${p.id}">
+          <div class="featured"><img src="${p.image_url || 'https://via.placeholder.com/400x300?text=Home'}" alt=""></div>
+          <h3>${p.title}</h3>
+          <div class="meta">${p.location || '—'} • ₹${p.price}</div>
+        </a>
+      `).join('');
+
+      const rms = await fetchRoommates({});
+      const container2 = document.getElementById('featured-roommates');
+      container2.innerHTML = rms.slice(0,6).map(r => `
+        <a class="card linkless" href="roommate.html?id=${r.id}">
+          <h3>${r.title}</h3>
+          <div class="meta">${r.location || '—'} • ₹${r.budget_min || '?'} - ${r.budget_max || '?'}</div>
+          <p class="small">${(r.description||'').slice(0,100)}</p>
+        </a>
+      `).join('');
+    }
+
+    load();
+  </script>
+</body>
+</html>
